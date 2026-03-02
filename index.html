@@ -93,6 +93,8 @@ body{font-family:'Noto Serif JP',serif;background:#fdf8f0;color:#3d2b1f;min-heig
 .ing-row{display:flex;gap:.375rem;align-items:center;margin-bottom:.4rem}
 .ing-name{flex:2;min-width:0}
 .ing-sm{width:3.5rem;flex-shrink:0}
+.fselect{padding:.6rem .3rem;border:1px solid #e8d5b7;border-radius:.5rem;background:#fdf8f0;font-family:inherit;font-size:.8rem;color:#3d2b1f;outline:none;transition:border-color .2s,box-shadow .2s;cursor:pointer;width:5.75rem;flex-shrink:0}
+.fselect:focus{border-color:#9b6845;box-shadow:0 0 0 3px rgba(155,104,69,.15)}
 .btn-rm{width:2rem;height:2rem;border-radius:50%;border:none;background:none;color:#f87171;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;font-family:inherit}
 .btn-rm:hover{background:#fee2e2}
 
@@ -330,6 +332,10 @@ let photoB64 = '';
 let ingIdx = 0, stepIdx = 0;
 let editingId = null;
 const MULTS = [0.5,1,1.5,2,2.5,3,3.5,4];
+const UNITS = ['','g','kg','mg','ml','cc','L','大さじ','小さじ','カップ','合','個','本','枚','切れ','袋','缶','パック','束','粒','房','株','適量','少々'];
+function unitOptions(val='') {
+  return UNITS.map(u => `<option value="${u}"${u===val?' selected':''}>${u||'─ 単位 ─'}</option>`).join('');
+}
 
 // ── Escape ────────────────────────────────────────────
 function e(s) {
@@ -451,7 +457,7 @@ function addIngRow() {
   d.innerHTML = `
     <input type="text" class="finput ing-name" placeholder="食材名" id="in${i}">
     <input type="text" class="finput ing-sm" placeholder="量" id="ia${i}">
-    <input type="text" class="finput ing-sm" placeholder="単位" id="iu${i}">
+    <select class="fselect" id="iu${i}">${unitOptions()}</select>
     <button class="btn-rm" onclick="rmEl('ir${i}')">×</button>`;
   document.getElementById('ingList').appendChild(d);
 }
@@ -566,7 +572,7 @@ function openEditModal(id) {
       d.innerHTML = `
         <input type="text" class="finput ing-name" placeholder="食材名" id="in${i}" value="${e(ing.name)}">
         <input type="text" class="finput ing-sm" placeholder="量" id="ia${i}" value="${e(ing.amount)}">
-        <input type="text" class="finput ing-sm" placeholder="単位" id="iu${i}" value="${e(ing.unit)}">
+        <select class="fselect" id="iu${i}">${unitOptions(ing.unit)}</select>
         <button class="btn-rm" onclick="rmEl('ir${i}')">×</button>`;
       document.getElementById('ingList').appendChild(d);
     });
